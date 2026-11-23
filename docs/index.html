@@ -522,7 +522,7 @@ function setHover(i){
   if (i >= 0){
     positionSticker(i);
     sticker.classList.add('show');
-    swapCaption(DRESSES[i].name + ' · ' + rp(DRESSES[i].price), DRESSES[i].colour + ' / XS – XL');
+    swapCaption(DRESSES[i].name + ' · ' + rp(DRESSES[i].price), DRESSES[i].colour + ' / M – XL');
   } else {
     sticker.classList.remove('show');
     swapCaption(IDLE1, IDLE2);
@@ -560,7 +560,7 @@ qs('#pdpClose').addEventListener('click', closePDP);
 /* ---------------- product window ---------------- */
 var cur = -1, selSize = 'M';
 var sizesWrap = qs('#pdpSizes');
-['XS','S','M','L','XL'].forEach(function(sz){
+['M','L','XL'].forEach(function(sz){
   var b = document.createElement('button');
   b.type = 'button'; b.className = 'size'; b.textContent = sz; b.setAttribute('data-size', sz);
   b.addEventListener('click', function(){
@@ -840,6 +840,62 @@ function cleanSheet(whiteSrc, cutSrc, boxes, isFront){
           if (a < 225 || n0) clear.push(p2);
         }
         clear.forEach(function(p3){ cd[p3 + 3] = 0; });
+      }
+      /* side sheet only: pocket remnants under the flood floor. A near-white
+         component (>= 40·f² px, white-sheet min RGB >= 245) that borders an
+         enclosed transparent region (neck void, strap/bead gap) is leftover
+         backdrop the remover cut mid-pocket; fabric sheens are fully buffered
+         by dimmer fabric and never touch an enclosed hole, so they survive. */
+      if (!isFront){
+        function alphaAt(lx, ly){ return cd[((zy0 + ly) * W + (zx0 + lx)) * 4 + 3]; }
+        var ext = new Uint8Array(zw * zh), estack = [];
+        function seedExt(lx, ly){
+          var li = ly * zw + lx;
+          if (!ext[li] && alphaAt(lx, ly) === 0){ ext[li] = 1; estack.push(li); }
+        }
+        for (var bx = 0; bx < zw; bx++){ seedExt(bx, 0); seedExt(bx, zh - 1); }
+        for (var by = 0; by < zh; by++){ seedExt(0, by); seedExt(zw - 1, by); }
+        while (estack.length){
+          var ei = estack.pop(), ex = ei % zw, ey = (ei / zw) | 0;
+          if (ex > 0) seedExt(ex - 1, ey);
+          if (ex < zw - 1) seedExt(ex + 1, ey);
+          if (ey > 0) seedExt(ex, ey - 1);
+          if (ey < zh - 1) seedExt(ex, ey + 1);
+        }
+        var hole = new Uint8Array(zw * zh);
+        for (var hi = 0; hi < zw * zh; hi++){
+          var hx = hi % zw, hy = (hi / zw) | 0;
+          hole[hi] = (alphaAt(hx, hy) === 0 && !ext[hi]) ? 1 : 0;
+        }
+        function isNearWhite(lx, ly){
+          var p4 = ((zy0 + ly) * W + (zx0 + lx)) * 4;
+          return cd[p4 + 3] > 0 && wd[p4] >= 245 && wd[p4 + 1] >= 245 && wd[p4 + 2] >= 245;
+        }
+        var seen2 = new Uint8Array(zw * zh);
+        for (var ly3 = 0; ly3 < zh; ly3++) for (var lx3 = 0; lx3 < zw; lx3++){
+          var li3 = ly3 * zw + lx3;
+          if (seen2[li3] || !isNearWhite(lx3, ly3)) continue;
+          var comp2 = [], stack2 = [li3], touchesHole = false;
+          seen2[li3] = 1;
+          while (stack2.length){
+            var ci3 = stack2.pop(); comp2.push(ci3);
+            var cx3 = ci3 % zw, cy3 = (ci3 / zw) | 0;
+            if (cx3 > 0 && hole[ci3 - 1]) touchesHole = true;
+            if (cx3 < zw - 1 && hole[ci3 + 1]) touchesHole = true;
+            if (cy3 > 0 && hole[ci3 - zw]) touchesHole = true;
+            if (cy3 < zh - 1 && hole[ci3 + zw]) touchesHole = true;
+            if (cx3 > 0 && !seen2[ci3 - 1] && isNearWhite(cx3 - 1, cy3)){ seen2[ci3 - 1] = 1; stack2.push(ci3 - 1); }
+            if (cx3 < zw - 1 && !seen2[ci3 + 1] && isNearWhite(cx3 + 1, cy3)){ seen2[ci3 + 1] = 1; stack2.push(ci3 + 1); }
+            if (cy3 > 0 && !seen2[ci3 - zw] && isNearWhite(cx3, cy3 - 1)){ seen2[ci3 - zw] = 1; stack2.push(ci3 - zw); }
+            if (cy3 < zh - 1 && !seen2[ci3 + zw] && isNearWhite(cx3, cy3 + 1)){ seen2[ci3 + zw] = 1; stack2.push(ci3 + zw); }
+          }
+          if (touchesHole && comp2.length >= 40 * f * f){
+            comp2.forEach(function(ci4){
+              var px2 = ci4 % zw, py2 = (ci4 / zw) | 0;
+              cd[((zy0 + py2) * W + (zx0 + px2)) * 4 + 3] = 0;
+            });
+          }
+        }
       }
     });
     cctx.putImageData(cdata, 0, 0);
