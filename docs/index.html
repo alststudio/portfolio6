@@ -18,6 +18,7 @@
 html,body{height:100%;overflow:hidden;background:var(--bg)}
 body{
   background:radial-gradient(ellipse 70% 55% at 50% 40%,#18181a,#0b0b0c);
+  background-repeat:no-repeat;
   color:var(--ink);
   font-family:"Inter","Helvetica Neue",Arial,sans-serif;
   -webkit-font-smoothing:antialiased;
@@ -347,9 +348,13 @@ window.addEventListener('keydown', function (e) {
 
 function fit() {
   var k = Math.min(window.innerWidth / 1500, window.innerHeight / 1000);
+  var left = (window.innerWidth - 1500 * k) / 2;
+  var top = (window.innerHeight - 1000 * k) / 2;
   art.style.transform = 'scale(' + k + ')';
-  art.style.left = ((window.innerWidth - 1500 * k) / 2) + 'px';
-  art.style.top = ((window.innerHeight - 1000 * k) / 2) + 'px';
+  art.style.left = left + 'px';
+  art.style.top = top + 'px';
+  document.body.style.backgroundSize = (1500 * k) + 'px ' + (1000 * k) + 'px';
+  document.body.style.backgroundPosition = left + 'px ' + top + 'px';
 }
 window.addEventListener('resize', fit);
 fit();
