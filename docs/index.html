@@ -51,7 +51,6 @@ img{display:block}
   transform:scaleX(.913);transform-origin:0 0;
 }
 .hl span{display:block}
-.sub{position:absolute;left:443px;top:184.7px;width:232px;font-size:16.3px;line-height:24.5px;color:var(--ink)}
 .credit{position:absolute;right:38px;top:861px;font-size:10.5px;color:rgba(58,38,32,.8)}
 .mobilecopy{display:none}
 
@@ -217,7 +216,7 @@ body.dim .hero,body.dim .nav{filter:blur(11px) saturate(.96)}
 .bag-foot strong{font-size:19px;color:#1E1310}
 
 /* ---------- intro hidden state ---------- */
-.js-intro .hl span,.js-intro .sub,.js-intro .dress,.js-intro .bag,
+.js-intro .hl span,.js-intro .dress,.js-intro .bag,
 .js-intro .wordmark,.js-intro .bagpill,.js-intro .caption{opacity:0}
 
 /* ---------- phones (< 820 px) ---------- */
@@ -231,7 +230,6 @@ body.dim .hero,body.dim .nav{filter:blur(11px) saturate(.96)}
   .pillcount{width:26px;height:26px;font-size:12px}
   .mobilecopy{display:block;padding:92px 20px 6px}
   .mobilecopy h1{font-size:clamp(56px,17vw,84px);line-height:.87;letter-spacing:-.3px}
-  .mobilecopy p{font-size:15.5px;line-height:1.48;max-width:300px;margin-top:14px}
   .rack{
     position:relative;inset:auto;overflow-x:auto;overflow-y:hidden;
     scrollbar-width:none;overscroll-behavior-x:contain;
@@ -240,7 +238,7 @@ body.dim .hero,body.dim .nav{filter:blur(11px) saturate(.96)}
   }
   .rack::-webkit-scrollbar{display:none}
   .track{position:relative;inset:auto}
-  .hl,.sub,.plate.flip{display:none}
+  .hl,.plate.flip{display:none}
   .caption{position:relative;left:auto;top:auto;width:auto;transform:none;padding:4px 20px 26px;min-height:92px}
   .toast{top:52px}
   .pdp{width:100vw;height:100dvh;border-radius:0;display:flex;flex-direction:column}
@@ -258,8 +256,7 @@ body.dim .hero,body.dim .nav{filter:blur(11px) saturate(.96)}
 <body>
 <div class="hero" id="hero">
   <div class="mobilecopy">
-    <h1>Dandan cantik.<br>Makin bersinar.</h1>
-    <p>Satin lembut, kancing mutiara, dan sedikit kilau untuk malam ini.</p>
+    <h1>Dandan.<br>Bersinar.</h1>
   </div>
   <div class="rack" id="rack">
     <div class="track" id="track">
@@ -268,15 +265,14 @@ body.dim .hero,body.dim .nav{filter:blur(11px) saturate(.96)}
         <img class="plate flip" style="left:-1440px" alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261114_132815_809092cb-b72d-4f4f-b41c-c1d24681acef.png&amp;w=2048&amp;q=85">
         <img class="plate flip" style="left:1440px" alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261114_132815_809092cb-b72d-4f4f-b41c-c1d24681acef.png&amp;w=2048&amp;q=85">
         <img class="railimg" alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261114_132917_2cb0e896-2d1e-4f5b-a87a-dfee64cda3d0.png&amp;w=2048&amp;q=85">
-        <h1 class="hl"><span>Dandan cantik.</span><span>Makin bersinar.</span></h1>
-        <p class="sub">Satin lembut, kancing mutiara, dan sedikit kilau untuk malam ini.</p>
+        <h1 class="hl"><span>Dandan.</span><span>Bersinar.</span></h1>
         <div class="hits" id="hits"></div>
         <button class="sticker" id="sticker" type="button">Intip gaun ini</button>
         <button class="bag" id="bagBtn" type="button" aria-label="Buka tas belanja">
           <img class="bagimg" alt="" src="https://images.higgs.ai/?default=1&amp;output=webp&amp;url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20261114_134055_faa0ec42-af98-4a01-80bc-75e40bdfc913.png&amp;w=2048&amp;q=85">
           <span class="bagcount" id="bagCount">0</span>
         </button>
-        <div class="credit">Dibuat oleh Perlé Atelier.</div>
+        <div class="credit">Dibuat oleh Alst Studio.</div>
       </div>
     </div>
   </div>
@@ -783,7 +779,7 @@ function cleanSheet(whiteSrc, cutSrc, boxes, isFront){
     var wdata = wctx.getImageData(0, 0, W, H);
     var cdata = cctx.getImageData(0, 0, W, H);
     var wd = wdata.data, cd = cdata.data;
-    var thresh = 250 * f * f;
+    var thresh = (isFront ? 120 : 400) * f * f;
     boxes.forEach(function(b){
       var zx0 = Math.max(0, Math.floor((b[0] - 30) * f));
       var zx1 = Math.min(W, Math.ceil((b[0] + b[2] + 30) * f));
@@ -795,7 +791,8 @@ function cleanSheet(whiteSrc, cutSrc, boxes, isFront){
         var p = ((zy0 + ly) * W + (zx0 + lx)) * 4;
         return wd[p] >= 253 && wd[p + 1] >= 253 && wd[p + 2] >= 253 && cd[p + 3] > 0;
       }
-      if (isFront){
+      /* pocket removal runs on both sheets; only the size floor differs */
+      {
         var seen = new Uint8Array(zw * zh);
         for (var ly = 0; ly < zh; ly++) for (var lx = 0; lx < zw; lx++){
           var li = ly * zw + lx;
@@ -898,10 +895,6 @@ function startIntro(){
       { opacity: 1, transform: 'translateY(0%)', clipPath: 'inset(0 0 0% 0)' }
     ], { duration: 950, delay: 140 + 120 * idx, easing: EASE, fill: 'backwards' });
   });
-  qs('.sub').animate([
-    { opacity: 0, transform: 'translateY(10px)' },
-    { opacity: 1, transform: 'translateY(0px)' }
-  ], { duration: 900, delay: 380, easing: EASE, fill: 'backwards' });
   qs('#bagBtn').animate([
     { opacity: 0, transform: 'translateY(10px)' },
     { opacity: 1, transform: 'translateY(0px)' }
