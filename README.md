@@ -1,6 +1,6 @@
-# RUCAS — Hero Rel Pakaian Streetwear
+# NORTHVALE — Hero Rel Pakaian Streetwear
 
-Halaman hero toko streetwear **RUCAS** untuk GitHub Pages: satu komposisi
+Halaman hero toko streetwear **NORTHVALE** untuk GitHub Pages: satu komposisi
 1500×1000 yang diskalakan mengikuti layar, menampilkan rel pakaian krom
 dengan sepuluh produk tergantung menyamping (CSS 3D `rotateY`) yang berputar
 menghadap pengunjung saat kursor diarahkan, keterangan produk, tombol kapsul
@@ -9,7 +9,7 @@ navigasi sebelumnya/berikutnya.
 
 - `docs/index.html` — satu file mandiri (CSS dan JavaScript sebaris, tanpa
   framework dan tanpa proses build).
-- `docs/assets/rucas-sheet.png` — sprite sheet transparan 2048×1360 berisi
+- `docs/assets/northvale-sheet.png` — sprite sheet transparan 2048×1360 berisi
   sepuluh produk pada hanger (5 kolom × 2 baris); semua tampilan rel dan
   detail digambar dari sheet ini dengan pemetaan piksel dan polygon clip
   per produk.
